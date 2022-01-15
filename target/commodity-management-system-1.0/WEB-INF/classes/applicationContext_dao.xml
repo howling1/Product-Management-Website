@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Data Access Layer Config File: to create dao object-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--read jdbc.properties-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+
+    <!--create data source object with druid database connection pool-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <!--Configure properties for data source object with the data read from jdbc.properties-->
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+    <!--create SqlSessionFactoryBean object to manage MyBatis-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--config data source-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--config MyBatis main config file-->
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"></property>
+        <!--config entity class to create alias-->
+        <property name="typeAliasesPackage" value="org.example.pojo"></property>
+    </bean>
+
+    <!--create scanner for mapper file to create dao objects-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.example.mapper"></property>
+    </bean>
+</beans>
